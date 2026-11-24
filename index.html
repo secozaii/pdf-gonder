@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Belge Gönderme</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .panel {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+            box-shadow: 0 5px 25px #00000015;
+        }
+        h1 { color: #16365c; font-size: 26px; }
+        p { color: #64748b; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="panel">
+        <h1>PDF Belge Gönderme</h1>
+        <p id="status">Bağlantı kuruluyor. Lütfen bekleyiniz...</p>
+    </div>
+
+    <script>
+        async function connect() {
+            try {
+                const response = await fetch(
+                    "./adres.json?t=" + Date.now(),
+                    { cache: "no-store" }
+                );
+                if (!response.ok) throw new Error();
+                const data = await response.json();
+                const url = new URL(data.url);
+
+                if (url.protocol !== "https:" ||
+                    !url.hostname.endsWith(".trycloudflare.com")) {
+                    throw new Error();
+                }
+
+                window.location.replace(url.href);
+            } catch (error) {
+                document.getElementById("status").textContent =
+                    "Sistem şu anda hazır değil. Lütfen görevliye bildiriniz.";
+            }
+        }
+        connect();
+    </script>
+</body>
+</html>
